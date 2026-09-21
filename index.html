@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Campus Food Roulette</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f6f8;
+    color: #222;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px;
+}
+
+/* HEADER */
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    font-size: 42px;
+    margin: 5px 0;
+}
+
+header p {
+    color: #666;
+    font-size: 18px;
+}
+
+/* TOP STATS */
+
+.top-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.stat-box {
+    background: white;
+    padding: 22px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.stat-label {
+    display: block;
+    color: #777;
+    font-size: 15px;
+    margin-bottom: 7px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* STRATEGY */
+
+.strategy-section {
+    background: white;
+    padding: 22px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.strategy-section h2 {
+    margin-top: 0;
+}
+
+.strategy-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.strategy-btn {
+    border: 3px solid transparent;
+    background: #f2f2f2;
+    padding: 15px 35px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.strategy-btn:hover {
+    transform: translateY(-2px);
+}
+
+.strategy-btn.selected-explore {
+    border-color: #2878d4;
+    background: #eaf3ff;
+}
+
+.strategy-btn.selected-exploit {
+    border-color: #d93636;
+    background: #fff0f0;
+}
+
+.strategy-count {
+    margin-top: 15px;
+    color: #666;
+}
+
+/* MAIN GAME */
+
+.game-section {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.game-section h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+/* FOOD CARDS */
+
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+}
+
+.food-card {
+    border: 3px solid transparent;
+    background: #f8f8f8;
+    border-radius: 15px;
+    padding: 22px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+    background: #eeeeee;
+}
+
+.food-card.selected {
+    border-color: #222;
+    background: #eeeeee;
+    transform: translateY(-3px);
+}
+
+.food-emoji {
+    font-size: 48px;
+}
+
+.food-name {
+    font-size: 19px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.selected-text {
+    display: none;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.food-card.selected .selected-text {
+    display: block;
+}
+
+/* PHYSICAL CHIT */
+
+.chit-section {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px solid #eee;
+}
+
+.chit-section h2 {
+    margin-bottom: 8px;
+}
+
+.chit-message {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.outcome-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.outcome-btn {
+    min-height: 150px;
+    border: none;
+    border-radius: 18px;
+    cursor: pointer;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.outcome-btn small {
+    display: block;
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+.good-btn {
+    background: #18884a;
+}
+
+.good-btn:hover {
+    background: #116b39;
+    transform: scale(1.02);
+}
+
+.bad-btn {
+    background: #c73535;
+}
+
+.bad-btn:hover {
+    background: #a62929;
+    transform: scale(1.02);
+}
+
+.outcome-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* RESULT */
+
+.result {
+    text-align: center;
+    background: #f8f8f8;
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 25px;
+}
+
+.result-title {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.result-points {
+    font-size: 42px;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.new-score {
+    font-size: 20px;
+    color: #555;
+}
+
+.next-btn {
+    margin-top: 20px;
+    border: none;
+    background: #222;
+    color: white;
+    padding: 14px 35px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.next-btn:hover {
+    background: #444;
+}
+
+/* TABLE */
+
+.table-section {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.table-section h2 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th,
+td {
+    padding: 13px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f1f1f1;
+}
+
+/* CHARTS */
+
+.charts-section {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.charts-section h2 {
+    text-align: center;
+}
+
+.chart {
+    margin: 25px 0;
+}
+
+.chart-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    align-items: center;
+    gap: 15px;
+    margin: 13px 0;
+}
+
+.chart-label {
+    font-weight: bold;
+}
+
+.bar-container {
+    display: flex;
+    height: 32px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #eee;
+}
+
+.good-bar {
+    background: #18884a;
+}
+
+.bad-bar {
+    background: #c73535;
+}
+
+.explore-bar {
+    background: #2878d4;
+}
+
+.exploit-bar {
+    background: #d93636;
+}
+
+/* FINAL SCREEN */
+
+.final-screen {
+    text-align: center;
+    background: white;
+    padding: 35px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.final-screen h2 {
+    font-size: 38px;
+}
+
+.final-score {
+    font-size: 55px;
+    font-weight: bold;
+    margin: 15px;
+}
+
+.final-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.summary-box {
+    background: #f5f5f5;
+    padding: 18px;
+    border-radius: 10px;
+}
+
+.summary-number {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.reset-btn {
+    margin-top: 25px;
+    padding: 15px 35px;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.reset-btn:hover {
+    background: #444;
+}
+
+/* HIDDEN */
+
+.hidden {
+    display: none !important;
+}
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+    .food-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .final-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+
+    header h1 {
+        font-size: 32px;
+    }
+
+    .top-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .strategy-buttons {
+        flex-direction: column;
+    }
+
+    .outcome-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .food-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-row {
+        grid-template-columns: 90px 1fr;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>🍔 CAMPUS FOOD ROULETTE</h1>
+        <p>Explore vs Exploit — Physical + Digital Classroom Game</p>
+    </header>
+
+
+    <!-- TOP STATS -->
+
+    <div class="top-stats">
+
+        <div class="stat-box">
+            <span class="stat-label">ROUND</span>
+            <span class="stat-value" id="roundDisplay">1 / 30</span>
+        </div>
+
+        <div class="stat-box">
+            <span class="stat-label">SCORE</span>
+            <span class="stat-value" id="scoreDisplay">0</span>
+        </div>
+
+    </div>
+
+
+    <!-- STRATEGY -->
+
+    <div class="strategy-section">
+
+        <h2>STRATEGY</h2>
+
+        <div class="strategy-buttons">
+
+            <button
+                id="exploreBtn"
+                class="strategy-btn"
+                onclick="chooseStrategy('explore')">
+
+                🔵 EXPLORE
+
+            </button>
+
+            <button
+                id="exploitBtn"
+                class="strategy-btn"
+                onclick="chooseStrategy('exploit')">
+
+                🔴 EXPLOIT
+
+            </button>
+
+        </div>
+
+        <div class="strategy-count">
+
+            Explore: <b id="exploreCount">0</b>
+            &nbsp; | &nbsp;
+            Exploit: <b id="exploitCount">0</b>
+
+        </div>
+
+    </div>
+
+
+    <!-- GAME -->
+
+    <div id="gameSection" class="game-section">
+
+        <h2>STEP 1 — CHOOSE A FOOD STALL</h2>
+
+        <div class="food-grid">
+
+            <button class="food-card" onclick="selectStall(0)">
+                <div class="food-emoji">🍕</div>
+                <div class="food-name">Pizza</div>
+                <div class="selected-text">✓ SELECTED</div>
+            </button>
+
+            <button class="food-card" onclick="selectStall(1)">
+                <div class="food-emoji">🍜</div>
+                <div class="food-name">Noodles</div>
+                <div class="selected-text">✓ SELECTED</div>
+            </button>
+
+            <button class="food-card" onclick="selectStall(2)">
+                <div class="food-emoji">🌯</div>
+                <div class="food-name">Wraps</div>
+                <div class="selected-text">✓ SELECTED</div>
+            </button>
+
+            <button class="food-card" onclick="selectStall(3)">
+                <div class="food-emoji">🍔</div>
+                <div class="food-name">Burgers</div>
+                <div class="selected-text">✓ SELECTED</div>
+            </button>
+
+            <button class="food-card" onclick="selectStall(4)">
+                <div class="food-emoji">🥗</div>
+                <div class="food-name">Healthy Bowl</div>
+                <div class="selected-text">✓ SELECTED</div>
+            </button>
+
+        </div>
+
+
+        <div id="chitSection" class="chit-section hidden">
+
+            <h2 id="selectedStallText">
+                Selected Stall
+            </h2>
+
+            <p class="chit-message">
+                Now pick 1 physical chit from this stall's pile.
+            </p>
+
+            <div class="outcome-buttons">
+
+                <button
+                    id="goodBtn"
+                    class="outcome-btn good-btn"
+                    onclick="recordOutcome('good')">
+
+                    👍 GOOD MEAL
+                    <small>+10 points</small>
+
+                </button>
+
+                <button
+                    id="badBtn"
+                    class="outcome-btn bad-btn"
+                    onclick="recordOutcome('bad')">
+
+                    👎 BAD MEAL
+                    <small>−5 points</small>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- RESULT -->
+
+        <div id="result" class="result hidden">
+
+            <div id="resultTitle" class="result-title"></div>
+
+            <div id="resultPoints" class="result-points"></div>
+
+            <div id="newScore" class="new-score"></div>
+
+            <button
+                id="nextBtn"
+                class="next-btn"
+                onclick="nextRound()">
+
+                NEXT ROUND →
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- STALL STATISTICS -->
+
+    <div class="table-section">
+
+        <h2>📊 Stall Statistics</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Stall</th>
+                    <th>Played</th>
+                    <th>Good</th>
+                    <th>Bad</th>
+                    <th>Observed Success</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="statsTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="charts-section">
+
+        <h2>📈 Good vs Bad Meals</h2>
+
+        <div id="stallChart" class="chart"></div>
+
+        <h2>🔵 Explore vs 🔴 Exploit</h2>
+
+        <div id="strategyChart" class="chart"></div>
+
+    </div>
+
+
+    <!-- FINAL RESULTS -->
+
+    <div id="finalScreen" class="final-screen hidden">
+
+        <h2>GAME COMPLETE 🎉</h2>
+
+        <div class="final-score" id="finalScore">
+            0
+        </div>
+
+        <p>Final Score</p>
+
+        <div class="final-summary">
+
+            <div class="summary-box">
+                <div class="summary-number" id="finalGood">0</div>
+                Good Meals
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-number" id="finalBad">0</div>
+                Bad Meals
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-number" id="finalExplore">0</div>
+                Explore
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-number" id="finalExploit">0</div>
+                Exploit
+            </div>
+
+        </div>
+
+        <button class="reset-btn" onclick="newGame()">
+            🔄 NEW GAME
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================
+   GAME DATA
+========================================= */
+
+const stalls = [
+    {
+        name: "Pizza",
+        emoji: "🍕",
+        played: 0,
+        good: 0,
+        bad: 0
+    },
+
+    {
+        name: "Noodles",
+        emoji: "🍜",
+        played: 0,
+        good: 0,
+        bad: 0
+    },
+
+    {
+        name: "Wraps",
+        emoji: "🌯",
+        played: 0,
+        good: 0,
+        bad: 0
+    },
+
+    {
+        name: "Burgers",
+        emoji: "🍔",
+        played: 0,
+        good: 0,
+        bad: 0
+    },
+
+    {
+        name: "Healthy Bowl",
+        emoji: "🥗",
+        played: 0,
+        good: 0,
+        bad: 0
+    }
+];
+
+
+let round = 1;
+let score = 0;
+
+let selectedStall = null;
+let selectedStrategy = null;
+
+let exploreCount = 0;
+let exploitCount = 0;
+
+let goodMeals = 0;
+let badMeals = 0;
+
+let outcomeRecorded = false;
+
+
+/* =========================================
+   STRATEGY
+========================================= */
+
+function chooseStrategy(strategy) {
+
+    // Do not allow changing strategy after outcome
+    if (outcomeRecorded) {
+        return;
+    }
+
+    selectedStrategy = strategy;
+
+    const exploreBtn =
+        document.getElementById("exploreBtn");
+
+    const exploitBtn =
+        document.getElementById("exploitBtn");
+
+    exploreBtn.classList.remove(
+        "selected-explore"
+    );
+
+    exploitBtn.classList.remove(
+        "selected-exploit"
+    );
+
+
+    if (strategy === "explore") {
+
+        exploreBtn.classList.add(
+            "selected-explore"
+        );
+
+    } else {
+
+        exploitBtn.classList.add(
+            "selected-exploit"
+        );
+
+    }
+
+    updateStrategyDisplay();
+}
+
+
+/* =========================================
+   SELECT STALL
+========================================= */
+
+function selectStall(index) {
+
+    // Strategy must be selected first
+    if (selectedStrategy === null) {
+
+        alert(
+            "Please choose EXPLORE or EXPLOIT first."
+        );
+
+        return;
+    }
+
+    // Don't allow another stall after outcome
+    if (outcomeRecorded) {
+        return;
+    }
+
+    selectedStall = index;
+
+    const cards =
+        document.querySelectorAll(".food-card");
+
+    cards.forEach(function(card) {
+
+        card.classList.remove("selected");
+
+    });
+
+    cards[index].classList.add("selected");
+
+
+    document.getElementById(
+        "selectedStallText"
+    ).textContent =
+        "Selected Stall: " +
+        stalls[index].emoji +
+        " " +
+        stalls[index].name;
+
+
+    document.getElementById(
+        "chitSection"
+    ).classList.remove("hidden");
+}
+
+
+/* =========================================
+   RECORD PHYSICAL CHIT OUTCOME
+========================================= */
+
+function recordOutcome(outcome) {
+
+    // A stall must be selected
+    if (selectedStall === null) {
+
+        alert(
+            "Please choose a food stall first."
+        );
+
+        return;
+    }
+
+
+    // Prevent multiple clicks
+    if (outcomeRecorded) {
+        return;
+    }
+
+    outcomeRecorded = true;
+
+
+    const stall =
+        stalls[selectedStall];
+
+
+    /* Update strategy count */
+
+    if (selectedStrategy === "explore") {
+
+        exploreCount++;
+
+    } else if (selectedStrategy === "exploit") {
+
+        exploitCount++;
+
+    }
+
+
+    /* Update stall */
+
+    stall.played++;
+
+
+    let points;
+
+
+    if (outcome === "good") {
+
+        points = 10;
+
+        stall.good++;
+
+        goodMeals++;
+
+        score += 10;
+
+    } else {
+
+        points = -5;
+
+        stall.bad++;
+
+        badMeals++;
+
+        score -= 5;
+
+    }
+
+
+    /* Disable outcome buttons */
+
+    document.getElementById(
+        "goodBtn"
+    ).disabled = true;
+
+    document.getElementById(
+        "badBtn"
+    ).disabled = true;
+
+
+    /* Display result */
+
+    const result =
+        document.getElementById("result");
+
+    const resultTitle =
+        document.getElementById("resultTitle");
+
+    const resultPoints =
+        document.getElementById("resultPoints");
+
+    const newScore =
+        document.getElementById("newScore");
+
+
+    if (outcome === "good") {
+
+        resultTitle.textContent =
+            "👍 GOOD MEAL!";
+
+        resultPoints.textContent =
+            "+10 points";
+
+    } else {
+
+        resultTitle.textContent =
+            "👎 BAD MEAL";
+
+        resultPoints.textContent =
+            "−5 points";
+
+    }
+
+
+    newScore.textContent =
+        "New Score: " + score;
+
+
+    result.classList.remove("hidden");
+
+
+    updateDisplay();
+}
+
+
+/* =========================================
+   NEXT ROUND
+========================================= */
+
+function nextRound() {
+
+    if (!outcomeRecorded) {
+
+        alert(
+            "Please record the physical chit result first."
+        );
+
+        return;
+    }
+
+
+    /* Check if game is complete */
+
+    if (round >= 30) {
+
+        showFinalResults();
+
+        return;
+    }
+
+
+    round++;
+
+    selectedStall = null;
+    selectedStrategy = null;
+    outcomeRecorded = false;
+
+
+    /* Reset strategy buttons */
+
+    document.getElementById(
+        "exploreBtn"
+    ).classList.remove(
+        "selected-explore"
+    );
+
+    document.getElementById(
+        "exploitBtn"
+    ).classList.remove(
+        "selected-exploit"
+    );
+
+
+    /* Reset stall cards */
+
+    document
+        .querySelectorAll(".food-card")
+        .forEach(function(card) {
+
+            card.classList.remove("selected");
+
+        });
+
+
+    /* Hide chit section */
+
+    document.getElementById(
+        "chitSection"
+    ).classList.add("hidden");
+
+
+    /* Hide result */
+
+    document.getElementById(
+        "result"
+    ).classList.add("hidden");
+
+
+    /* Enable outcome buttons */
+
+    document.getElementById(
+        "goodBtn"
+    ).disabled = false;
+
+    document.getElementById(
+        "badBtn"
+    ).disabled = false;
+
+
+    updateDisplay();
+
+}
+
+
+/* =========================================
+   UPDATE DISPLAY
+========================================= */
+
+function updateDisplay() {
+
+    document.getElementById(
+        "roundDisplay"
+    ).textContent =
+        round + " / 30";
+
+
+    document.getElementById(
+        "scoreDisplay"
+    ).textContent =
+        score;
+
+
+    updateStrategyDisplay();
+
+    updateStatsTable();
+
+    updateCharts();
+
+}
+
+
+/* =========================================
+   STRATEGY DISPLAY
+========================================= */
+
+function updateStrategyDisplay() {
+
+    document.getElementById(
+        "exploreCount"
+    ).textContent =
+        exploreCount;
+
+
+    document.getElementById(
+        "exploitCount"
+    ).textContent =
+        exploitCount;
+
+}
+
+
+/* =========================================
+   STATS TABLE
+========================================= */
+
+function updateStatsTable() {
+
+    const table =
+        document.getElementById(
+            "statsTable"
+        );
+
+    table.innerHTML = "";
+
+
+    stalls.forEach(function(stall) {
+
+        let successRate = 0;
+
+        if (stall.played > 0) {
+
+            successRate =
+                Math.round(
+                    (stall.good /
+                    stall.played) * 100
+                );
+
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${stall.emoji}
+                ${stall.name}
+            </td>
+
+            <td>
+                ${stall.played}
+            </td>
+
+            <td>
+                ${stall.good}
+            </td>
+
+            <td>
+                ${stall.bad}
+            </td>
+
+            <td>
+                ${successRate}%
+            </td>
+
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================
+   CHARTS
+========================================= */
+
+function updateCharts() {
+
+    updateStallChart();
+
+    updateStrategyChart();
+
+}
+
+
+/* GOOD VS BAD CHART */
+
+function updateStallChart() {
+
+    const chart =
+        document.getElementById(
+            "stallChart"
+        );
+
+    chart.innerHTML = "";
+
+
+    stalls.forEach(function(stall) {
+
+        const total =
+            stall.good + stall.bad;
+
+
+        let goodWidth = 0;
+        let badWidth = 0;
+
+
+        if (total > 0) {
+
+            goodWidth =
+                (stall.good / total) * 100;
+
+            badWidth =
+                (stall.bad / total) * 100;
+
+        }
+
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "chart-row";
+
+
+        row.innerHTML = `
+
+            <div class="chart-label">
+                ${stall.emoji}
+                ${stall.name}
+            </div>
+
+            <div class="bar-container">
+
+                <div
+                    class="good-bar"
+                    style="width:${goodWidth}%">
+                </div>
+
+                <div
+                    class="bad-bar"
+                    style="width:${badWidth}%">
+                </div>
+
+            </div>
+
+        `;
+
+
+        chart.appendChild(row);
+
+    });
+
+}
+
+
+/* EXPLORE VS EXPLOIT CHART */
+
+function updateStrategyChart() {
+
+    const chart =
+        document.getElementById(
+            "strategyChart"
+        );
+
+    chart.innerHTML = "";
+
+
+    const total =
+        exploreCount + exploitCount;
+
+
+    let exploreWidth = 0;
+    let exploitWidth = 0;
+
+
+    if (total > 0) {
+
+        exploreWidth =
+            (exploreCount / total) * 100;
+
+        exploitWidth =
+            (exploitCount / total) * 100;
+
+    }
+
+
+    const row =
+        document.createElement("div");
+
+    row.className =
+        "chart-row";
+
+
+    row.innerHTML = `
+
+        <div class="chart-label">
+            Strategy
+        </div>
+
+        <div class="bar-container">
+
+            <div
+                class="explore-bar"
+                style="width:${exploreWidth}%">
+            </div>
+
+            <div
+                class="exploit-bar"
+                style="width:${exploitWidth}%">
+            </div>
+
+        </div>
+
+    `;
+
+
+    chart.appendChild(row);
+
+
+    const text =
+        document.createElement("p");
+
+    text.style.textAlign =
+        "center";
+
+    text.innerHTML =
+        "🔵 Explore: " +
+        exploreCount +
+        " &nbsp;&nbsp; | &nbsp;&nbsp; " +
+        "🔴 Exploit: " +
+        exploitCount;
+
+
+    chart.appendChild(text);
+
+}
+
+
+/* =========================================
+   FINAL RESULTS
+========================================= */
+
+function showFinalResults() {
+
+    /* Hide game */
+
+    document.getElementById(
+        "gameSection"
+    ).classList.add("hidden");
+
+
+    /* Show final screen */
+
+    document.getElementById(
+        "finalScreen"
+    ).classList.remove("hidden");
+
+
+    document.getElementById(
+        "finalScore"
+    ).textContent =
+        score;
+
+
+    document.getElementById(
+        "finalGood"
+    ).textContent =
+        goodMeals;
+
+
+    document.getElementById(
+        "finalBad"
+    ).textContent =
+        badMeals;
+
+
+    document.getElementById(
+        "finalExplore"
+    ).textContent =
+        exploreCount;
+
+
+    document.getElementById(
+        "finalExploit"
+    ).textContent =
+        exploitCount;
+
+
+    updateDisplay();
+
+}
+
+
+/* =========================================
+   NEW GAME
+========================================= */
+
+function newGame() {
+
+    round = 1;
+    score = 0;
+
+    selectedStall = null;
+    selectedStrategy = null;
+
+    exploreCount = 0;
+    exploitCount = 0;
+
+    goodMeals = 0;
+    badMeals = 0;
+
+    outcomeRecorded = false;
+
+
+    /* Reset stalls */
+
+    stalls.forEach(function(stall) {
+
+        stall.played = 0;
+        stall.good = 0;
+        stall.bad = 0;
+
+    });
+
+
+    /* Reset cards */
+
+    document
+        .querySelectorAll(".food-card")
+        .forEach(function(card) {
+
+            card.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    /* Reset strategy buttons */
+
+    document.getElementById(
+        "exploreBtn"
+    ).classList.remove(
+        "selected-explore"
+    );
+
+    document.getElementById(
+        "exploitBtn"
+    ).classList.remove(
+        "selected-exploit"
+    );
+
+
+    /* Enable outcome buttons */
+
+    document.getElementById(
+        "goodBtn"
+    ).disabled = false;
+
+    document.getElementById(
+        "badBtn"
+    ).disabled = false;
+
+
+    /* Hide sections */
+
+    document.getElementById(
+        "chitSection"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "result"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "finalScreen"
+    ).classList.add("hidden");
+
+
+    /* Show game */
+
+    document.getElementById(
+        "gameSection"
+    ).classList.remove("hidden");
+
+
+    updateDisplay();
+
+}
+
+
+/* =========================================
+   INITIAL DISPLAY
+========================================= */
+
+updateDisplay();
+
+</script>
+
+</body>
+</html>
